@@ -1,8 +1,8 @@
-# openpyxl2
+# openpyxl-enhanced
 
 [Русская версия](README.ru.md)
 
-**openpyxl2** is a fork of [openpyxl](https://foss.heptapod.net/openpyxl/openpyxl), a Python library for reading and writing Excel `.xlsx`, `.xlsm`, `.xltx` and `.xltm` files. It improves row and column editing, maintains formula references, and preserves formatting of merged cells.
+**openpyxl-enhanced** is a fork of [openpyxl](https://foss.heptapod.net/openpyxl/openpyxl), a Python library for reading and writing Excel `.xlsx`, `.xlsm`, `.xltx` and `.xltm` files. It improves row and column editing, maintains formula references, and preserves formatting of merged cells.
 
 The Python package and import name remain **`openpyxl`**. Python 3.8 or newer is required; the repository's CI matrix covers Python 3.8–3.14. The code is based on the upstream 3.2 development line and reports version `3.2.0b2`.
 
@@ -11,8 +11,8 @@ The Python package and import name remain **`openpyxl`**. Python 3.8 or newer is
 Install this repository in a virtual environment to use the fork:
 
 ```sh
-git clone https://github.com/EugeneRymarev/openpyxl2.git
-cd openpyxl2
+git clone https://github.com/EugeneRymarev/openpyxl-enhanced.git
+cd openpyxl-enhanced
 python -m pip install .
 ```
 
@@ -46,7 +46,7 @@ python -m pip install /path/to/openpyxl-3.2.0b2-py3-none-any.whl
 
 Use the filename for the version you downloaded. The wheel works on Windows, Linux and macOS with supported Python versions.
 
-To publish packages in [GitHub Releases](https://github.com/EugeneRymarev/openpyxl2/releases):
+To publish packages in [GitHub Releases](https://github.com/EugeneRymarev/openpyxl-enhanced/releases):
 
 1. Update `__version__` in `openpyxl/_constants.py` and commit the change together with the workflow.
 2. Create and publish a GitHub Release (or prerelease) from that commit with a tag equal to the package version, optionally prefixed with `v`, for example `v3.2.0b2`. Saving a draft or pushing a tag alone does not publish packages.
@@ -56,7 +56,7 @@ The upload job uses the automatic `GITHUB_TOKEN` with `contents: write`; no extr
 
 ## Differences from original openpyxl
 
-This overview compares the fork with the upstream revision imported into its history, [`1fa786a9d`](https://github.com/EugeneRymarev/openpyxl2/commit/1fa786a9dd5d77754d703f967832f5243e08ba0a). The examples below use fork revision `4c2bce2eb6f4682a1c3bafbb00e8802e3aac88a5`. This is a reproducible comparison of two source revisions, not a claim that every upstream release behaves identically.
+This overview compares the fork with the upstream revision imported into its history, [`1fa786a9d`](https://github.com/EugeneRymarev/openpyxl-enhanced/commit/1fa786a9dd5d77754d703f967832f5243e08ba0a). The examples below use fork revision `4c2bce2eb6f4682a1c3bafbb00e8802e3aac88a5`. This is a reproducible comparison of two source revisions, not a claim that every upstream release behaves identically.
 
 - **Row and column edits maintain dependencies.** `insert_rows`, `insert_cols`, `delete_rows` and `delete_cols` update merged ranges, static workbook and worksheet names, print areas, print titles, row heights and column widths, including stored hidden/grouping/style properties. Supported literal names include unions and whole-row/whole-column references.
 - **Formulas follow structural edits.** Direct A1 references in ordinary cell formulas throughout the workbook and in calculated defined names are adjusted, including absolute and mixed references. Ranges expand or shrink; references that are completely deleted become `#REF!`. Dollar signs still control copying, but do not prevent structural updates.
@@ -111,7 +111,7 @@ wb.save("insert_rows.xlsx")
 
 Previously, the cells moved but the formula in `C10` stayed `=SUM(C6:C7)`, giving **10**, and the merge stayed at `B3:E3`. Now the formula becomes `=SUM(C7:C8)`, giving **30**, and the title's merge moves to `B4:E4`.
 
-| Before: original openpyxl                                                                     | After: openpyxl2                                                                                   |
+| Before: original openpyxl                                                                     | After: openpyxl-enhanced                                                                                   |
 |-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | ![insert_rows before: total 10 and displaced title](doc/readme/images/insert_rows_before.jpg) | ![insert_rows after: total 30 and correctly merged title](doc/readme/images/insert_rows_after.jpg) |
 
@@ -124,7 +124,7 @@ wb.save("insert_cols.xlsx")
 
 Previously, `D9` still summed `C6:C7`, now containing item names, and displayed **0**. The old `B3:E3` merge also hid the moved title when Excel opened the file. Now `D9` sums `D6:D7` and displays **30**; the merge moves to `C3:F3`, and the column dimensions follow the table.
 
-| Before: original openpyxl                                                                  | After: openpyxl2                                                                          |
+| Before: original openpyxl                                                                  | After: openpyxl-enhanced                                                                          |
 |--------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|
 | ![insert_cols before: total 0 and missing title](doc/readme/images/insert_cols_before.jpg) | ![insert_cols after: total 30 and visible title](doc/readme/images/insert_cols_after.jpg) |
 
@@ -137,7 +137,7 @@ wb.save("delete_rows.xlsx")
 
 Previously, the formula moved to `C8` but kept `=SUM(C6:C7)`, giving **20**. The title moved away from its merge. Now `C8` contains `=SUM(C5:C6)`, giving **30**, and the merge moves to `B2:E2`.
 
-| Before: original openpyxl                                                                     | After: openpyxl2                                                                                   |
+| Before: original openpyxl                                                                     | After: openpyxl-enhanced                                                                                   |
 |-----------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
 | ![delete_rows before: total 20 and displaced title](doc/readme/images/delete_rows_before.jpg) | ![delete_rows after: total 30 and correctly merged title](doc/readme/images/delete_rows_after.jpg) |
 
@@ -150,7 +150,7 @@ wb.save("delete_cols.xlsx")
 
 Previously, `B9` still summed `C6:C7`, now the unit prices, giving **5**. The original narrow column A clipped the moved labels, and the merge stayed at `B3:E3`. Now `B9` sums `B6:B7`, giving **30**; the merge becomes `A3:D3`, and the widths move with the columns.
 
-| Before: original openpyxl                                                                   | After: openpyxl2                                                                             |
+| Before: original openpyxl                                                                   | After: openpyxl-enhanced                                                                             |
 |---------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------|
 | ![delete_cols before: total 5 and clipped labels](doc/readme/images/delete_cols_before.jpg) | ![delete_cols after: total 30 and preserved widths](doc/readme/images/delete_cols_after.jpg) |
 
@@ -178,7 +178,7 @@ wb.save("merged.xlsx")
 
 Previously, only the anchor stored the assigned border, so Excel displayed an incomplete outline. Now both the rectangular and single-row merges have a **complete outer border**. Excel already displays the anchor's fill and centered text across the old merge; the visible correction here is the border. The fork additionally propagates the other style properties in the underlying cells and preserves stored merged-cell styles on reload.
 
-| Before: original openpyxl                                                                | After: openpyxl2                                                                     |
+| Before: original openpyxl                                                                | After: openpyxl-enhanced                                                                     |
 |------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------|
 | ![merge_cells before: incomplete blue borders](doc/readme/images/merge_cells_before.jpg) | ![merge_cells after: complete blue borders](doc/readme/images/merge_cells_after.jpg) |
 
@@ -239,6 +239,6 @@ python -m pip install -e .
 python -m pytest
 ```
 
-The [upstream documentation](https://openpyxl.pages.heptapod.net/openpyxl/) explains the shared API. Use this README and the repository's `doc/` notes for fork-specific behavior. Report fork issues in the [openpyxl2 tracker](https://github.com/EugeneRymarev/openpyxl2/issues).
+The [upstream documentation](https://openpyxl.pages.heptapod.net/openpyxl/) explains the shared API. Use this README and the repository's `doc/` notes for fork-specific behavior. Report fork issues in the [openpyxl-enhanced tracker](https://github.com/EugeneRymarev/openpyxl-enhanced/issues).
 
 Distributed under the [MIT license](LICENCE.rst). Original openpyxl authors and contributors are listed in [AUTHORS.rst](AUTHORS.rst); the project was initially inspired by PHPExcel.
